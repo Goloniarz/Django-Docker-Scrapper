@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scraping aukcji samochodów</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        label {
+            margin-right: 10px;
+        }
+
+        input[type="number"] {
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            width: 50px;
+        }
+
+        button {
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #4cae4c;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f0f0f0;
+        }
+
+        a {
+            color: #337ab7;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .error {
+            color: red;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Scraping aukcji samochodów</h1>
+    
+    <!-- Formularz do wprowadzenia liczby stron -->
+    <form action="" method="post">
+        {% csrf_token %}
+        <label for="num_pages">Liczba stron do przetworzenia:</label>
+        <input type="number" id="num_pages" name="num_pages" min="1" value="{{ num_pages|default_if_none:'1' }}">
+        <button type="submit">Uruchom Scraping</button>
+    </form>
+
+    <!-- Wyświetlanie samochodów wraz z linkami -->
+    {% if cars_list %}
+        <table>
+            <tr>
+                <th>Nazwa</th>
+                <th>Cena</th>
+                <th>Stan</th>
+                <th>Link do aukcji</th>
+            </tr>
+            {% for car in cars_list %}
+            <tr>
+                <td>{{ car.name }}</td>
+                <td>{{ car.price }}</td>
+                <td>{{ car.condition }}</td>
+                <td><a href="{{ car.link }}">Link do aukcji</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>Brak danych do wyświetlenia.</p>
+    {% endif %}
+    
+    <!-- Wyświetlanie komunikatu o błędzie -->
+    {% if error %}
+        <p class="error">Error: {{ error }}</p>
+    {% endif %}
+</body>
+</html>
