@@ -1,8 +1,8 @@
 import httpx   
 from selectolax.parser import HTMLParser
 from pymongo import  MongoClient
+
 def get_html(baseurl, params=None):
-    #nagłówek "User-Agent" dla żądania HTTP
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 OPR/102.0.0.0"
     }
@@ -18,16 +18,17 @@ def extract_text(element, sel):
         return None
 
 def parse_page(html):
-    cars = []
+    cars_list = []
     for car_element in html.css("div.vehicle-card__content"):
         car = {
+            "make": "Porsche",
             "name": extract_text(car_element, ".vehicle-card__title"),
             "price": extract_text(car_element, ".vehicle-card__bid-digits"),
             "condition": extract_text(car_element, ".vehicle-card__specs"),
             "link": car_element.css_first("a").attributes["href"]
         }
-        cars.append(car)
-    return cars
+        cars_list.append(car)
+    return cars_list
 
 
 def find_max_pages(html):
@@ -39,9 +40,9 @@ def find_max_pages(html):
     return max(int(page.text()) for page in page_numbers if page.text().isdigit())
 
 def main():
-    client = MongoClient('mongodb://localhost:27017')
-    db = client['mydb']
-    collection = db['cars']
+   # client = MongoClient('mongodb://localhost:27017')
+   # db = client['mydb']
+   # collection = db['cars']
 
     baseurl = "https://ucars.pro/pl/sales-history"
     
